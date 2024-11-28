@@ -28,11 +28,23 @@ class Robot:
 
     def move(self, event = None):
         # Update the robot's x-coordinate based on its linear speed, orientation, and rotational speed
+        old_x = self.x
         self.x += (self.u * math.cos(self.theta) - self.a * math.sin(self.theta) * self.W)*dt
 
         # Update the robot's y-coordinate based on its linear speed, orientation, and rotational speed
+        old_y = self.y
         self.y += (self.u * math.sin(self.theta) + self.a * math.cos(self.theta) * self.W)*dt
+
+        # Check if the new position is within the borders
+        if not (0 + self.w / 2 <= self.x <= environment.width - self.w / 2):
+            self.x = old_x
+        if not (0 + self.w / 2 <= self.y <= environment.height - self.w / 2):
+            self.y = old_y
+
         self.theta += self.W * dt
+
+        # Apply a damping factor to the rotational speed to prevent it from increasing too rapidly
+        self.W *= 0.59 # Damping factor
 
         # Rotate the robot's image based on its orientation angle
         self.rotated = pygame.transform.rotozoom(self.img, math.degrees(-self.theta), 1)
@@ -120,7 +132,6 @@ class Env:
 
     def robot_frame(self):
         pass
-
 
 def robot_simulate(Robot, event =None):
     Robot.move(event=event)

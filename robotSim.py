@@ -43,6 +43,9 @@ class Robot:
 
         self.theta += self.W * dt
 
+        # Apply a damping factor to the rotational speed to prevent it from increasing too rapidly
+        self.W *= 0.59  # Damping factor
+
         # Rotate the robot's image based on its orientation angle
         self.rotated = pygame.transform.rotozoom(self.img, math.degrees(-self.theta), 1)
         self.rect = self.rotated.get_rect(center=(self.x, self.y))
